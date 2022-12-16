@@ -32,14 +32,42 @@
         width: 400px;
         display: block;
       }
+      label {
+        display: block;
+      }
     </style>
     <title>Password generator</title>
   </head>
   <body>
     <div class="container">
+      <form>
+        <label>
+          <input
+            type="checkbox"
+            disabled
+            checked
+            class="passType"
+            name="lower"
+          />
+          Lower Case:
+        </label>
+        <label>
+          <input type="checkbox" class="passType" name="upper" />
+          UpperCase:
+        </label>
+        <label>
+          <input type="checkbox" class="passType" name="numbers" />
+          Numbers:
+        </label>
+        <label>
+          <input type="checkbox" class="passType" name="symbols" />
+          Symbols:
+        </label>
+      </form>
+
       <input
         type="number"
-        max="100"
+        max="50"
         min="1"
         class="count"
         placeholder="Password length"
@@ -52,8 +80,14 @@
     </div>
 
     <script>
-      const SYMBOLS = `qazxswedcvfrtgbmnlpokiujhyQAZXSWEDCMNBVPLKOIJHUYGTFR1234567890~!@#$%^&*()_-+={[}]|:;"'<,>.?/\``;
+      const symbolObj = {
+        LOWER: "qazxswedcvfrtgbmnlpokiujhy",
+        UPPER: "QAZXSWEDCMNBVPLKOIJHUYGTFR",
+        NUMBERS: "1234567890",
+        SYMBOLS: `~!@#$%^&*()_-+={[}]|:;"'<,>.?/\``,
+      };
 
+      const checkboxes = document.querySelectorAll(".passType");
       const count = document.querySelector(".count");
       const title = document.querySelector(".title");
       const snackbar = document.querySelector(".snackbar");
@@ -64,19 +98,26 @@
         const value = count.value.trim();
         if (!value || value === "0") {
           count.value = "";
-        } else if (value > 101) {
-          count.value = 100;
+          btn.disabled = true;
+        } else if (value >= 51) {
+          count.value = 50;
         } else {
           btn.disabled = !!!value;
         }
       };
 
       const generatePass = () => {
+        let finalSymbols = "";
+        checkboxes.forEach((el) => {
+          if (el.name && el.checked) {
+            finalSymbols += symbolObj[el.name.toUpperCase()];
+          }
+        });
         const passLength = Number(count.value);
         let password = "";
 
         for (let i = 0; i < passLength; i++) {
-          password += getRandomSymbol(SYMBOLS, i);
+          password += getRandomSymbol(finalSymbols, i);
         }
 
         copyText(password);
