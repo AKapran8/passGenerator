@@ -1,2 +1,2 @@
 # passGenerator
-Custom password generator
+Custom password generator. Simple interface. Easy to use
